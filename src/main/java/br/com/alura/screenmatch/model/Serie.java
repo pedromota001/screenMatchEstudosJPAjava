@@ -3,6 +3,8 @@ package br.com.alura.screenmatch.model;
 import br.com.alura.screenmatch.service.traducao.ConsultaMyMemory;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 
 @Entity
@@ -20,7 +22,10 @@ public class Serie {
     private String atores;
     private String poster;
     private String sinopse;
+    @Transient
+    private List<Episodio> episodioList = new ArrayList<>();
 
+    public Serie(){}
     public Serie(DadosSerie dadosSerie) {
         this.titulo = dadosSerie.titulo();
         this.totalTemporadas = dadosSerie.totalTemporadas();
@@ -37,6 +42,14 @@ public class Serie {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<Episodio> getEpisodioList() {
+        return episodioList;
+    }
+
+    public void setEpisodioList(List<Episodio> episodioList) {
+        this.episodioList = episodioList;
     }
 
     public String getTitulo() {
