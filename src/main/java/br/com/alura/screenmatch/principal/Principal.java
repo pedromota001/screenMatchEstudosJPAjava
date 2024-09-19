@@ -1,13 +1,11 @@
 package br.com.alura.screenmatch.principal;
 
-import br.com.alura.screenmatch.model.DadosSerie;
-import br.com.alura.screenmatch.model.DadosTemporada;
-import br.com.alura.screenmatch.model.Episodio;
-import br.com.alura.screenmatch.model.Serie;
+import br.com.alura.screenmatch.model.*;
 import br.com.alura.screenmatch.repository.ISerieRepository;
 import br.com.alura.screenmatch.service.ConsumoApi;
 import br.com.alura.screenmatch.service.ConverteDados;
 
+import javax.swing.*;
 import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,6 +36,9 @@ public class Principal {
                     3 - Listar series buscadas
                     4 - Buscar serie pelo titulo
                     5 - Buscar serie por ator
+                    6 - Top 5 series
+                    7 - Buscar series por categoria
+                    8 - Buscar series por numero maximo de temporadas e avaliacao
                                     
                     0 - Sair                                 
                     """;
@@ -61,6 +62,15 @@ public class Principal {
                     break;
                 case 5:
                     buscarSeriePorAtor();
+                    break;
+                case 6:
+                    buscarTop5Series();
+                    break;
+                case 7:
+                    buscarSeriePorCategoria();
+                    break;
+                case 8:
+                    buscarSeriePorTemporadaEavaliacao();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -150,4 +160,29 @@ public class Principal {
         seriesEncontradas.forEach(s ->
                 System.out.println(s.getTitulo() + ", avaliacao: " + s.getAvaliacao()));
     }
+    private void buscarTop5Series(){
+        List<Serie> seriesTop = repositorio.findTop5ByOrderByAvaliacaoDesc();
+        seriesTop.forEach(s ->
+                System.out.println(s.getTitulo() + ", avaliacao: " + s.getAvaliacao()));
+    }
+    private void buscarSeriePorCategoria(){
+        System.out.println("Deseja buscar series de que categorias/genero");
+        var nomeGenero = leitura.nextLine();
+        Categoria categoria = Categoria.fromPortugues(nomeGenero);
+        List<Serie> seriesCategoria = repositorio.findByGenero(categoria);
+        System.out.println("Series da categoria: " + categoria);
+        seriesCategoria.forEach(s ->
+                System.out.println(s.getTitulo() + ", avaliacao: " + s.getAvaliacao()));
+    }
+    private void buscarSeriePorTemporadaEavaliacao(){
+        System.out.println("Digite a quantidade maxima de temporadas que uma serie deve ter: ");
+        var qntTemp = leitura.nextInt();
+        System.out.println("Agora a avaliacao minima das series: ");
+        var avaliacao = leitura.nextDouble();
+        List<Serie> seriesPorTemporadaAvaliacao = repositorio.findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqual(qntTemp, avaliacao);
+        System.out.println("Series filtradas: ");
+        seriesPorTemporadaAvaliacao.forEach(s->
+                System.out.println(s.getTitulo() + ", avaliacao: " + s.getAvaliacao() + ", Total de Temporadas: " + s.getTotalTemporadas()));
+    }
 }
+//series com no max 3 temporadas e avaliacao maior ou igual a 8.4
