@@ -39,6 +39,7 @@ public class Principal {
                     6 - Top 5 series
                     7 - Buscar series por categoria
                     8 - Buscar series por numero maximo de temporadas e avaliacao
+                    9 - Buscar episodio pelo trecho
                                     
                     0 - Sair                                 
                     """;
@@ -71,6 +72,9 @@ public class Principal {
                     break;
                 case 8:
                     buscarSeriePorTemporadaEavaliacao();
+                    break;
+                case 9:
+                    buscarEpisodioPorTrecho();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -179,10 +183,18 @@ public class Principal {
         var qntTemp = leitura.nextInt();
         System.out.println("Agora a avaliacao minima das series: ");
         var avaliacao = leitura.nextDouble();
-        List<Serie> seriesPorTemporadaAvaliacao = repositorio.findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqual(qntTemp, avaliacao);
+        List<Serie> seriesPorTemporadaAvaliacao = repositorio.seriePorTemporadaEAvaliacao(qntTemp, avaliacao);
         System.out.println("Series filtradas: ");
         seriesPorTemporadaAvaliacao.forEach(s->
                 System.out.println(s.getTitulo() + ", avaliacao: " + s.getAvaliacao() + ", Total de Temporadas: " + s.getTotalTemporadas()));
     }
+    private void buscarEpisodioPorTrecho(){
+        System.out.println("Qual nome do episodio para busca: ");
+        var trechoEpisodio = leitura.nextLine();
+        List<Episodio> episodiosAchados = repositorio.episodiosPorTrecho(trechoEpisodio);
+        episodiosAchados.forEach(e ->
+                System.out.printf("Serie: %s Temporada %s - Episodio %s - %s\n",
+                        e.getSerie().getTitulo(), e.getTemporada(),
+                        e.getNumeroEpisodio(), e.getTitulo()));
+    }
 }
-//series com no max 3 temporadas e avaliacao maior ou igual a 8.4
